@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "./contexts/AuthContext";
 import { getFirestore, doc, onSnapshot } from "firebase/firestore";
 
-const UserViewPage = () => {
+const user = () => {
   const { currentUser } = useAuth();
   const [binStatus, setBinStatus] = useState("");
 
@@ -32,4 +32,4 @@ const UserViewPage = () => {
   );
 };
 
-export default UserViewPage;
+export default user;

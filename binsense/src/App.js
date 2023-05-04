@@ -1,5 +1,11 @@
 import "./styles/App.css";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Redirect,
+  Switch,
+} from "react-router-dom";
+import { useAuth } from "./contexts/AuthContext";
 
 function PrivateRoute({ children, ...rest }) {
   const currentUser = useAuth();
@@ -26,18 +32,25 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route exact path="/">
-          // Home page content
-        </Route>
-        <Route exact path="/login">
-          // Login page content
-        </Route>
-        <PrivateRoute exact path="/dashboard">
-          // User dashboard content
-        </PrivateRoute>
         <PrivateRoute exact path="/admin">
-          // Admin dashboard content
+          <admin />
         </PrivateRoute>
+
+        <PrivateRoute exact path="/user">
+          <user />
+        </PrivateRoute>
+
+        <Route exact path="/">
+          <home />
+        </Route>
+
+        <Route exact path="/login">
+          <login />
+        </Route>
+
+        <Route exact path="/signup">
+          <signup />
+        </Route>
       </Switch>
     </Router>
   );

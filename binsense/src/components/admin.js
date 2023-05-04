@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "./contexts/AuthContext";
 import { getFirestore, collection, onSnapshot } from "firebase/firestore";
 
-const AdminViewPage = () => {
+const admin = () => {
   const { currentUser } = useAuth();
   const [bins, setBins] = useState([]);
 
@@ -43,4 +43,4 @@ const AdminViewPage = () => {
   );
 };
 
-export default AdminViewPage;
+export default admin;

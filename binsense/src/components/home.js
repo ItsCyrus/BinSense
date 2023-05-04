@@ -1,6 +1,6 @@
 import React from 'react';
 
-const HomePage = () => {
+const home = () => {
   return (
     <div>
       <h1>Welcome to the Smart Dustbin System</h1>
@@ -10,4 +10,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default home;
