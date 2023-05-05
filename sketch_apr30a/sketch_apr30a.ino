@@ -37,7 +37,7 @@ void setup() {
   digitalWrite(redLedPin, LOW);
 
   // WiFi setup
-  WiFi.begin("KIIT-WIFI-NET.", "20051203@kiit");
+  WiFi.begin("Xiaomi 12 Pro", "12345678");
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
     Serial.println("Connecting to WiFi...");
