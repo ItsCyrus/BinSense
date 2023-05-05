@@ -1,7 +1,10 @@
-import React from "react";
+import { app } from "./firebase";
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import ReactDOM from "react-dom/client";
+import { getAuth } from 'firebase/auth';
+import { useAuth } from 'firebase/auth';
 import "./styles/index.css";
-import App from "./App";
 
 function PrivateRoute({ children, ...rest }) {
   const currentUser = useAuth();
@@ -53,6 +56,4 @@ root.render(
   </React.StrictMode>
 );
 
-{
-  /* <section>{user ? <userview /> : <loginpage />}</section> */
-}
+/* <section>{user ? <userview /> : <loginpage />}</section> */
