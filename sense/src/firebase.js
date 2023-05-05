@@ -1,4 +1,11 @@
+// Firebase SDK
 import { initializeApp } from "firebase/app";
+import 'firebase/firestore'
+import 'firebase/auth'
+
+// Hooks
+import {useAuthState} from 'react-firebase-hooks/auth'
+import {useCollectionData} from 'react-firebase-hooks/firestore'
 
 const firebaseConfig = {
   apiKey: "AIzaSyA1NLTDd6QdAYRS_SNel-7Ie27qlslknR0",
@@ -11,4 +18,7 @@ const firebaseConfig = {
   measurementId: "G-F3PWCJVX8Y"
 };
 
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
+
+const auth = app.auth()
+const firestore = app.firestore()
