@@ -1,29 +1,56 @@
-// Include the Ultrasonic library
-#include <Ultrasonic.h>
+#include <ESP32Servo.h>
 
-// Define the pins used by the ultrasonic sensor
-#define trigPin 26
-#define echoPin 27
+// define pins for sensors and actuators
+#define irSensorPin 34  // pin for IR sensor
+#define motorPin 14  // pin for motor
+#define greenLedPin 26  // pin for green LED
+#define redLedPin 27  // pin for red LED
 
-// Initialize the Ultrasonic sensor
-Ultrasonic ultrasonic(trigPin, echoPin);
+// create a servo object
+Servo motor;
 
-void setup()
-{
-  // Initialize serial communication at 9600 baud
+void setup() {
+  // initialize serial communication
   Serial.begin(115200);
+
+  // initialize IR sensor
+  pinMode(irSensorPin, INPUT);
+
+  // initialize motor
+  motor.attach(motorPin);
+
+  // initialize LEDs
+  pinMode(greenLedPin, OUTPUT);
+  pinMode(redLedPin, OUTPUT);
 }
 
-void loop()
-{
-  // Measure the distance from the ultrasonic sensor
-  int distance = ultrasonic.read();
+void loop() {
+  // read the IR sensor
+  int irSensorValue = digitalRead(irSensorPin);
 
-  // Print the distance to the serial monitor
-  Serial.print("Distance: ");
-  Serial.print(distance);
-  Serial.println(" cm");
+  // check if someone is approaching from the front
+  if (irSensorValue == LOW) {
+    // open the dustbin
+    motor.write(180);
+    digitalWrite(greenLedPin, HIGH);
+    digitalWrite(redLedPin, LOW);
+    // keep the lid open while the IR sensor continues to detect someone
+    while (digitalRead(irSensorPin) == LOW) {
+      // do nothing
+    }
+    // close the dustbin
+    motor.write(0);
+    digitalWrite(greenLedPin, LOW);
+    digitalWrite(redLedPin, LOW);
+  } else {
+    // no one is approaching from the front
+    digitalWrite(greenLedPin, LOW);
+    digitalWrite(redLedPin, LOW);
+  }
 
-  // Wait for 500ms before taking another reading
-  delay(500);
+  // print the IR sensor reading to the serial monitor for debugging
+  Serial.println(irSensorValue);
+
+  // wait for a short time before checking again
+  delay(100);
 }
