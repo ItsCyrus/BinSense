@@ -2,6 +2,7 @@
 #include <Ultrasonic.h>
 #include <FirebaseESP32.h>
 #include <WiFi.h>
+#include <WiFiMulti.h>
 
 // define pins for sensors and actuators
 #define trigPin1 33  // trig pin for ultrasonic sensor 1
@@ -20,6 +21,7 @@
 Ultrasonic ultrasonic1(trigPin1, echoPin1);
 Ultrasonic ultrasonic2(trigPin2, echoPin2);
 Servo servo;
+WiFiMulti wifiMulti;
 
 // Firebase configuration
 #define FIREBASE_HOST "https://binsense-aff88-default-rtdb.asia-southeast1.firebasedatabase.app/"
@@ -36,13 +38,18 @@ void setup() {
   digitalWrite(greenLedPin, LOW);
   digitalWrite(redLedPin, LOW);
 
+  wifiMulti.addAP("KIIT-WIFI-NET.", "20051203@kiit");
+  wifiMulti.addAP("Cyrus's iPhone", "enterprise");
+  wifiMulti.addAP("Xiaomi 12 Pro", "12345678");
+
   // WiFi setup
-  WiFi.begin("Xiaomi 12 Pro", "12345678");
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.println("Connecting to WiFi...");
+  if (wifiMulti.run() == WL_CONNECTED) {
+    Serial.println("Connected to Wi-Fi");
+    // Your code here
+  } else {
+    Serial.println("Failed to connect to Wi-Fi");
   }
-  Serial.println("Connected to WiFi");
+  delay(1000);
 
   // Initialize Firebase
     Firebase.begin(FIREBASE_HOST, FIREBASE_SECRET);
