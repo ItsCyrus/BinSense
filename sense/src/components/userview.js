@@ -1,21 +1,39 @@
 import React, { useState, useEffect } from "react";
-import { getDatabase, ref, onValue } from "firebase/database";
-import { app } from "../firebase";
+import {
+  getFirestore,
+  collection,
+  doc,
+  onSnapshot,
+  deleteDoc,
+  setDoc,
+} from "firebase/firestore";
+import { getDatabase, ref, onValue, remove } from "firebase/database";
+import { app, db_realtime } from "../firebase";
 
 function BinStatus({ binId, onRemoveBin }) {
   const [status, setStatus] = useState("Offline");
 
   useEffect(() => {
     const database = getDatabase(app);
-    const getData = ref(database, `bins/${binId}/status`);
-    onValue(getData, (snapshot) => {
+    const binStatusRef = ref(database, `bins/${binId}/status`);
+    onValue(binStatusRef, (snapshot) => {
       const binStatus = snapshot.val();
       setStatus(binStatus || "Offline");
     });
   }, [binId]);
 
   const handleRemoveBin = () => {
-    onRemoveBin(binId);
+    const binRef = doc(db_realtime, "bins", binId);
+    deleteDoc(binRef)
+      .then(() => {
+        const database = getDatabase(app);
+        const binStatusRef = ref(database, `bins/${binId}`);
+        remove(binStatusRef);
+        onRemoveBin(binId);
+      })
+      .catch((error) => {
+        console.error("Error removing bin:", error);
+      });
   };
 
   return (
@@ -34,18 +52,17 @@ function AddBin({ onAddBin }) {
   const [secret, setSecret] = useState("");
 
   const handleAddBin = () => {
-    const database = getDatabase(app);
-    const binRef = ref(database, `bins/${binId}/secret`);
-    onValue(binRef, (snapshot) => {
-      const correctSecret = snapshot.val();
-      if (correctSecret === secret) {
+    const db = getFirestore(app);
+    const binRef = doc(db, "bins", binId);
+    setDoc(binRef, { secret })
+      .then(() => {
         onAddBin(binId);
         setBinId("");
         setSecret("");
-      } else {
-        alert("Invalid bin ID or secret");
-      }
-    });
+      })
+      .catch((error) => {
+        console.error("Error adding bin:", error);
+      });
   };
 
   return (
@@ -71,15 +88,15 @@ function UserView() {
   const [bins, setBins] = useState([]);
 
   useEffect(() => {
-    const storedBins = JSON.parse(localStorage.getItem("bins"));
-    if (storedBins) {
-      setBins(storedBins);
-    }
-  }, []);
+    const db = getFirestore(app);
+    const binsCollection = collection(db, "bins");
+    const unsubscribe = onSnapshot(binsCollection, (snapshot) => {
+      const binIds = snapshot.docs.map((doc) => doc.id);
+      setBins(binIds);
+    });
 
-  useEffect(() => {
-    localStorage.setItem("bins", JSON.stringify(bins));
-  }, [bins]);
+    return () => unsubscribe();
+  }, []);
 
   const handleAddBin = (binId) => {
     if (bins.includes(binId)) {
@@ -92,6 +109,7 @@ function UserView() {
   const handleRemoveBin = (binId) => {
     setBins(bins.filter((bin) => bin !== binId));
   };
+
   return (
     <div>
       <h1>BinSense</h1>

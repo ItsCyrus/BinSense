@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import {
-  getFirestore,
   collection,
   query,
   where,
@@ -21,7 +20,9 @@ function Login() {
     e.preventDefault();
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      console.log("User signed in:", user.uid);
 
       const usersRef = collection(db, "users");
       const q = query(usersRef, where("id", "==", email));

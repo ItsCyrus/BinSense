@@ -2,10 +2,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
-
-// Hooks
-import {useAuthState} from 'react-firebase-hooks/auth'
-import {useCollectionData} from 'react-firebase-hooks/firestore'
+import { getDatabase } from 'firebase/database';
 
 const firebaseConfig = {
   apiKey: "AIzaSyA1NLTDd6QdAYRS_SNel-7Ie27qlslknR0",
@@ -21,5 +18,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const db_realtime = getDatabase(app);
 
-export { app, auth, db };
+export { app, auth, db, db_realtime };

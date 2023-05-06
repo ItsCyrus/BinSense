@@ -1,14 +1,12 @@
 import { useState } from "react";
-import { app, auth } from "../firebase";
+import { db, auth } from "../firebase";
 import { collection, doc, setDoc } from "firebase/firestore";
-import { getDatabase } from "firebase/database";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import Navbar from "./Navbar";
 
 function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const db = getDatabase(app);
 
   const handleSignup = () => {
     createUserWithEmailAndPassword(auth, email, password)
@@ -20,7 +18,9 @@ function Signup() {
         const userDoc = doc(usersCollection, user.uid);
 
         setDoc(userDoc, {
+          id: user.email,
           subscriptions: [],
+          admin: false,
         })
           .then(() => {
             console.log("User document updated successfully");

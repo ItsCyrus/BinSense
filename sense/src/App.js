@@ -1,14 +1,54 @@
-import React from "react";
-import { Redirect, BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Switch, Route, useHistory } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+
+import { db, auth } from "./firebase";
 import Home from "./components/Home";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import UserView from "./components/UserView";
 import AdminView from "./components/AdminView";
-import "./styles//App.css";
+import "./styles/App.css";
 
 function App() {
-  const isAuthenticated = false;
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const history = useHistory();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is logged in
+        setIsAuthenticated(true);
+
+        // Check if user is an admin
+        const userRef = doc(db, "users", user.uid);
+        getDoc(userRef)
+          .then((docSnapshot) => {
+            if (docSnapshot.exists()) {
+              const userData = docSnapshot.data();
+              setIsAdmin(userData.admin);
+
+              // Redirect user to UserView or AdminView based on admin status
+              history.push(userData.admin ? "/adminview" : "/userview");
+            }
+          })
+          .catch((error) => {
+            console.error("Error getting user document:", error);
+          });
+      } else {
+        // User is logged out
+        setIsAuthenticated(false);
+        setIsAdmin(false);
+
+        // Redirect user to login page
+        history.push("/login");
+      }
+    });
+
+    return () => unsubscribe();
+  }, [history]);
 
   return (
     <Router>
@@ -22,43 +62,19 @@ function App() {
         <Route path="/signup">
           <Signup />
         </Route>
-        <PrivateRoute
+        <Route
           path="/userview"
           component={UserView}
           isAuthenticated={isAuthenticated}
         />
-        <PrivateRoute
+        <Route
           path="/adminview"
           component={AdminView}
           isAuthenticated={isAuthenticated}
-          isAdmin={true}
+          isAdmin={isAdmin}
         />
       </Switch>
     </Router>
-  );
-}
-
-function PrivateRoute({
-  component: Component,
-  isAuthenticated,
-  isAdmin,
-  ...rest
-}) {
-  return (
-    <Route
-      {...rest}
-      render={(props) =>
-        isAuthenticated ? (
-          isAdmin ? (
-            <Component {...props} />
-          ) : (
-            <Redirect to="/userview" />
-          )
-        ) : (
-          <Redirect to="/login" />
-        )
-      }
-    />
   );
 }
 
