@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ref, onValue } from "firebase/database";
 import { db_realtime } from "../firebase";
-import { Redirect } from "react-router-dom";
 import "../styles/App.css";
 
 function BinStatus({ binId, onRemoveBin }) {

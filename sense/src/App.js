@@ -49,18 +49,6 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  const handleLogout = () => {
-    signOut(auth)
-      .then(() => {
-        setIsAuthenticated(false);
-        setIsAdmin(false);
-        console.error("Signed out:");
-      })
-      .catch((error) => {
-        console.error("Error signing out:", error);
-      });
-  };
-
   return (
     <Router>
       <Bar />

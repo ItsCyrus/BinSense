@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { app, auth } from "../firebase";
-import { getDatabase, ref, onValue } from 'firebase/database';
+import { db_realtime } from "../firebase";
+import { ref, onValue } from 'firebase/database';
 
 function BinStatus({ binId, status }) {
   return (
@@ -26,10 +26,9 @@ function UserSubscription({ userId, subscriptions, onRemoveSubscription }) {
 function AdminView() {
   const [bins, setBins] = useState([]);
   const [users, setUsers] = useState([]);
-  const database = getDatabase(app);
 
   useEffect(() => {
-    const binsRef = ref(database, 'bins');
+    const binsRef = ref(db_realtime, 'bins');
     onValue(binsRef, (snapshot) => {
       const binData = snapshot.val();
       if (binData) {
@@ -43,7 +42,7 @@ function AdminView() {
       }
     });
 
-    const usersRef = ref(database, 'users');
+    const usersRef = ref(db_realtime, 'users');
     onValue(usersRef, (snapshot) => {
       const userData = snapshot.val();
       if (userData) {
