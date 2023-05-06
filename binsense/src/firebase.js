@@ -1,7 +1,7 @@
 // Firebase SDK
-import { initializeApp } from "firebase/app";
-import 'firebase/firestore'
-import 'firebase/auth'
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 // Hooks
 import {useAuthState} from 'react-firebase-hooks/auth'
@@ -18,7 +18,8 @@ const firebaseConfig = {
   measurementId: "G-F3PWCJVX8Y"
 };
 
-export const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const firestore = getFirestore(app);
 
-const auth = app.auth()
-const firestore = app.firestore()
+export { app, auth, firestore };

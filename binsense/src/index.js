@@ -2,17 +2,18 @@ import { app } from "./firebase";
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import ReactDOM from "react-dom/client";
-import { getAuth } from 'firebase/auth';
-import { useAuth } from 'firebase/auth';
+import { auth } from './firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import "./styles/index.css";
 
+
 function PrivateRoute({ children, ...rest }) {
-  const currentUser = useAuth();
+  const [user] = useAuthState(auth);
   return (
     <Route
       {...rest}
       render={({ location }) =>
-        currentUser ? (
+        user ? (
           children
         ) : (
           <Redirect
