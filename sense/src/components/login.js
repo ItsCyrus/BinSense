@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, firestore } from "./firebase";
-import Navbar from "./components/Navbar";
+import { auth, firestore } from "../firebase";
+import Navbar from "./Navbar";
 
 function Login() {
   const history = useHistory();

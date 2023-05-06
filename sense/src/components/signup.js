@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { app, auth } from "./firebase";
+import { app, auth } from "../firebase";
 import { collection, doc, setDoc } from "firebase/firestore";
 
 function Signup() {
