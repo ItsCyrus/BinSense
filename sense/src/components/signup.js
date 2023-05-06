@@ -1,9 +1,9 @@
-import "../styles/Signup.css";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { db, auth } from "../firebase";
 import { collection, doc, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import "../styles/Signup.css";
 
 function Signup() {
   const [email, setEmail] = useState("");
@@ -35,6 +35,7 @@ function Signup() {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.error("Signup failed:", errorCode, errorMessage);
+        setError(errorMessage); // Update the error state to display the error message
       });
   };
 
