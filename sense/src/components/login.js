@@ -1,14 +1,9 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import { db, auth } from "../firebase";
-import "../styles/App.css";
+import "../styles/Login.css";
 
 function Login() {
   const history = useHistory();
@@ -16,12 +11,15 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
       console.log("User signed in:", user.uid);
 
@@ -48,32 +46,38 @@ function Login() {
   };
 
   return (
-    <div>
-      <div className="container">
-        <h2>Login</h2>
+    <div className="login-container">
+      <div className="login-form">
+        <h2 className="login-title">Log In</h2>
+        {error && <p className="login-error">{error}</p>}
         <form onSubmit={handleLogin}>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email"></label>
             <input
               type="email"
+              placeholder="Email"
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              className="login-input"
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password"></label>
             <input
               type="password"
+              placeholder="Password"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="login-input"
             />
           </div>
-          <button type="submit">Login</button>
+          <button type="submit" className="login-button">
+            Login
+          </button>
         </form>
-        {error && <p>{error}</p>}
-        <p>
+        <p className="login-signup">
           Don't have an account? <Link to="/signup">Sign up</Link>
         </p>
       </div>

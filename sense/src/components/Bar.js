@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
-import "../styles/App.css";
+import "../styles/Bar.css";
 
 function Bar() {
   const location = useLocation();
@@ -12,10 +12,10 @@ function Bar() {
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
-        console.error("Signed out:");
+        console.log("Signed out successfully");
       })
       .catch((error) => {
-        console.log("Couldn't Sign-out");
+        console.error("Error signing out:", error);
       });
   };
 
@@ -29,7 +29,7 @@ function Bar() {
   }
 
   return (
-    <nav>
+    <nav className="navbar">
       <Link to="/" className="navbar-title">
         BinSense
       </Link>
@@ -40,7 +40,9 @@ function Bar() {
             {isHomePage ? (
               <LoginLink />
             ) : (
-              <button onClick={handleSignOut}>Logout</button>
+              <button className="navbar-button" onClick={handleSignOut}>
+                Logout
+              </button>
             )}
           </span>
         )}
