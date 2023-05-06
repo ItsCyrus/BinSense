@@ -1,27 +1,40 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
 import "../styles/Signup.css";
+import { Link } from "react-router-dom";
+import { useState } from "react";
+import { db, auth } from "../firebase";
+import { collection, doc, setDoc } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
-  const handleSignup = (e) => {
-    e.preventDefault();
-
+  const handleSignup = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed up successfully
         const user = userCredential.user;
-        console.log("Signed up successfully", user);
+        console.log("User signed up:", user.uid);
+
+        const usersCollection = collection(db, "users");
+        const userDoc = doc(usersCollection, user.uid);
+
+        setDoc(userDoc, {
+          id: user.email,
+          subscriptions: [],
+          admin: false,
+        })
+          .then(() => {
+            console.log("User document updated successfully");
+          })
+          .catch((error) => {
+            console.error("Error updating user document:", error);
+          });
       })
       .catch((error) => {
-        // Error occurred during signup
-        setError(error.message);
-        console.error("Error signing up:", error);
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error("Signup failed:", errorCode, errorMessage);
       });
   };
 

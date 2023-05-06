@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ref, onValue } from "firebase/database";
 import { db_realtime } from "../firebase";
-import "../styles/App.css";
+import "../styles/UserView.css";
 
 function BinStatus({ binId, onRemoveBin }) {
   const [status, setStatus] = useState("Offline");
@@ -48,7 +48,7 @@ function AddBin({ onAddBin }) {
   };
 
   return (
-    <div>
+    <div className="user-view-add-bin">
       <input
         type="text"
         placeholder="Bin ID"
@@ -61,7 +61,7 @@ function AddBin({ onAddBin }) {
         value={secret}
         onChange={(e) => setSecret(e.target.value)}
       />
-      <button onClick={handleAddBin}>+</button>
+      <button onClick={handleAddBin}>Add</button>
     </div>
   );
 }
@@ -93,9 +93,9 @@ function UserView() {
   };
 
   return (
-    <div>
-      <h1>BinSense</h1>
-      <table>
+    <div className="user-view-container">
+      <h1 className="user-view-title">BinSense</h1>
+      <table className="user-view-table">
         <thead>
           <tr>
             <th>Bin ID</th>
@@ -105,7 +105,11 @@ function UserView() {
         </thead>
         <tbody>
           {bins.map((bin) => (
-            <BinStatus key={bin} binId={bin} onRemoveBin={handleRemoveBin} />
+            <BinStatus
+              key={bin}
+              binId={bin}
+              onRemoveBin={handleRemoveBin}
+            />
           ))}
         </tbody>
       </table>

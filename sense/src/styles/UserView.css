@@ -1,0 +1,81 @@
+.user-view-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px;
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .user-view-title {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .user-view-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .user-view-table th,
+  .user-view-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+  
+  .user-view-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    text-align: left;
+  }
+  
+  .user-view-table td {
+    text-align: center;
+  }
+  
+  .user-view-actions {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .user-view-actions button {
+    padding: 8px 16px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .user-view-actions button:hover {
+    background-color: #555;
+  }
+  
+  .user-view-add-bin {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .user-view-add-bin input[type="text"] {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .user-view-add-bin button {
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .user-view-add-bin button:hover {
+    background-color: #555;
+  }
+  

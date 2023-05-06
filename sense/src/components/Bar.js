@@ -1,23 +1,24 @@
-import { Link, useLocation } from "react-router-dom";
-import { signOut } from "firebase/auth";
-import { auth } from "../firebase";
-import "../styles/Bar.css";
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
+import '../styles/Bar.css';
 
 function Bar() {
   const location = useLocation();
-  const isHomePage = location.pathname === "/";
+  const isHomePage = location.pathname === '/';
   const isLoginOrSignupPage =
-    location.pathname === "/login" || location.pathname === "/signup";
+    location.pathname === '/login' || location.pathname === '/signup';
 
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
-        console.log("Signed out successfully");
+        console.log('Signed out successfully');
       })
       .catch((error) => {
-        console.error("Error signing out:", error);
+        console.error('Error signing out:', error);
       });
-  };
+  }
 
   // Login link component
   function LoginLink() {
@@ -38,7 +39,12 @@ function Bar() {
         {!isLoginOrSignupPage && (
           <span>
             {isHomePage ? (
-              <LoginLink />
+              <>
+                <Link to="/signup" className="navbar-link">
+                  Signup
+                </Link>
+                <LoginLink />
+              </>
             ) : (
               <button className="navbar-button" onClick={handleSignOut}>
                 Logout
