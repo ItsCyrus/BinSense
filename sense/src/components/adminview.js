@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { db, db_realtime } from "../firebase";
 import { ref, onValue } from "firebase/database";
-import { doc, setDoc, collection, onSnapshot } from "firebase/firestore";
+import { doc, updateDoc, collection, onSnapshot } from "firebase/firestore";
+import "../styles/App.css";
 
 function BinStatus({ binId, status }) {
   return (
@@ -66,7 +67,7 @@ function AdminView() {
   const handleRemoveSubscription = async (userId) => {
     try {
       const userDocRef = doc(db, "users", userId);
-      await setDoc(userDocRef, {
+      await updateDoc(userDocRef, {
         subscriptions: [],
       });
 

@@ -8,12 +8,14 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { db, auth } from "../firebase";
+import "../styles/App.css";
 
 function Login() {
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
