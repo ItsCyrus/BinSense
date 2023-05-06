@@ -1,14 +1,21 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { db, db_realtime } from "../firebase";
-import { ref, onValue } from "firebase/database";
+import { ref, onValue, remove } from "firebase/database";
 import { doc, updateDoc, collection, onSnapshot } from "firebase/firestore";
-import "../styles/App.css";
+import "../styles/AdminView.css";
 
-function BinStatus({ binId, status }) {
+function BinStatus({ binId, status, onDeleteBin }) {
+  const handleDeleteBin = () => {
+    onDeleteBin(binId);
+  };
+
   return (
     <tr>
       <td>{binId}</td>
       <td>{status}</td>
+      <td>
+        <button onClick={handleDeleteBin}>Delete</button>
+      </td>
     </tr>
   );
 }
@@ -77,43 +84,65 @@ function AdminView() {
     }
   };
 
-  return (
-    <div>
-      <h1>Admin View</h1>
-      <h2>Bins</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Bin ID</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {bins.map((bin) => (
-            <BinStatus key={bin.binId} binId={bin.binId} status={bin.status} />
-          ))}
-        </tbody>
-      </table>
+   const handleDeleteBin = async (binId) => {
+    try {
+      const binRef = ref(db_realtime, `bins/${binId}`);
+      await remove(binRef);
 
-      <h2>Users</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>User ID</th>
-            <th>Subscriptions</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <User
-              key={user.id}
-              user={user}
-              onRemoveSubscription={handleRemoveSubscription}
-            />
-          ))}
-        </tbody>
-      </table>
+      console.log(`Successfully deleted bin ${binId}`);
+    } catch (error) {
+      console.error("Error deleting bin:", error);
+    }
+  };
+
+
+  return (
+    <div className="admin-view-container">
+      <h1 className="admin-view-title">Admin View</h1>
+      <div className="admin-view-section">
+        <h2 className="admin-view-section-title">Bins</h2>
+        <table className="admin-view-table">
+          <thead>
+            <tr>
+              <th>Bin ID</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {bins.map((bin) => (
+              <BinStatus
+                key={bin.binId}
+                binId={bin.binId}
+                status={bin.status}
+                onDeleteBin={handleDeleteBin}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="admin-view-section">
+        <h2 className="admin-view-section-title">Users</h2>
+        <table className="admin-view-table">
+          <thead>
+            <tr>
+              <th>User ID</th>
+              <th>Subscriptions</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <User
+                key={user.id}
+                user={user}
+                onRemoveSubscription={handleRemoveSubscription}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

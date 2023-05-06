@@ -1,0 +1,55 @@
+.admin-view-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .admin-view-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .admin-view-section {
+    margin-bottom: 30px;
+  }
+
+  .admin-view-section-title {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .admin-view-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .admin-view-table th {
+    background-color: #f2f2f2;
+    padding: 10px;
+    text-align: left;
+    font-weight: bold;
+  }
+  
+  .admin-view-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .admin-view-table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .admin-view-table button {
+    padding: 8px 16px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .admin-view-table button:hover {
+    background-color: #555;
+  }
+  
