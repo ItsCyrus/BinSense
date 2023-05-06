@@ -54,7 +54,7 @@ function App() {
         <Route exact path="/userview">
           <UserView />
         </Route>
-        <Route exact path="/adminiew">
+        <Route exact path="/adminview">
           <AdminView />
         </Route>
       </Switch>

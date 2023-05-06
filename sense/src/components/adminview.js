@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-import { db_realtime } from "../firebase";
-import { ref, onValue } from 'firebase/database';
+import { useEffect, useState } from "react";
+import { db, db_realtime } from "../firebase";
+import { ref, onValue } from "firebase/database";
+import { doc, setDoc, collection, onSnapshot } from "firebase/firestore";
 
 function BinStatus({ binId, status }) {
   return (
@@ -11,13 +12,13 @@ function BinStatus({ binId, status }) {
   );
 }
 
-function UserSubscription({ userId, subscriptions, onRemoveSubscription }) {
+function User({ user, onRemoveSubscription }) {
   return (
     <tr>
-      <td>{userId}</td>
-      <td>{subscriptions.join(', ')}</td>
+      <td>{user.id}</td>
+      <td>{user.subscriptions.join(", ")}</td>
       <td>
-        <button onClick={() => onRemoveSubscription(userId)}>Remove</button>
+        <button onClick={() => onRemoveSubscription(user.id)}>Remove</button>
       </td>
     </tr>
   );
@@ -27,40 +28,52 @@ function AdminView() {
   const [bins, setBins] = useState([]);
   const [users, setUsers] = useState([]);
 
+  // Fetch bins from the Realtime Database
   useEffect(() => {
-    const binsRef = ref(db_realtime, 'bins');
+    const binsRef = ref(db_realtime, "bins");
     onValue(binsRef, (snapshot) => {
       const binData = snapshot.val();
-      if (binData) {
-        const binList = Object.entries(binData).map(([binId, bin]) => ({
+      const binList = [];
+      for (const binId in binData) {
+        const bin = {
           binId,
-          status: bin.status || 'Offline',
-        }));
-        setBins(binList);
-      } else {
-        setBins([]);
+          status: binData[binId].status || "Offline",
+        };
+        binList.push(bin);
       }
-    });
-
-    const usersRef = ref(db_realtime, 'users');
-    onValue(usersRef, (snapshot) => {
-      const userData = snapshot.val();
-      if (userData) {
-        const userList = Object.entries(userData).map(([userId, user]) => ({
-          userId,
-          subscriptions: user.subscriptions || [],
-        }));
-        setUsers(userList);
-      } else {
-        setUsers([]);
-      }
+      setBins(binList);
     });
   }, []);
 
-  const handleRemoveSubscription = (userId) => {
-    // Implement the logic to remove the subscription for the user
-    // You can update the Firestore or perform any other necessary actions here
-    console.log(`Removing subscription for user ${userId}`);
+  // Fetch users from Firestore collection
+  useEffect(() => {
+    const usersCollection = collection(db, "users");
+    const unsubscribe = onSnapshot(usersCollection, (snapshot) => {
+      const userList = [];
+      snapshot.forEach((doc) => {
+        const user = {
+          id: doc.id,
+          subscriptions: doc.data().subscriptions || [],
+        };
+        userList.push(user);
+      });
+      setUsers(userList);
+    });
+
+    return () => unsubscribe(); // Clean up the subscription
+  }, []);
+
+  const handleRemoveSubscription = async (userId) => {
+    try {
+      const userDocRef = doc(db, "users", userId);
+      await setDoc(userDocRef, {
+        subscriptions: [],
+      });
+
+      console.log(`Successfully removed subscription for user ${userId}`);
+    } catch (error) {
+      console.error("Error removing subscription:", error);
+    }
   };
 
   return (
@@ -92,10 +105,9 @@ function AdminView() {
         </thead>
         <tbody>
           {users.map((user) => (
-            <UserSubscription
-              key={user.userId}
-              userId={user.userId}
-              subscriptions={user.subscriptions}
+            <User
+              key={user.id}
+              user={user}
               onRemoveSubscription={handleRemoveSubscription}
             />
           ))}
