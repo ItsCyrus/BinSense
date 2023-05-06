@@ -1,39 +1,23 @@
-import React, { useState, useEffect } from "react";
-import {
-  getFirestore,
-  collection,
-  doc,
-  onSnapshot,
-  deleteDoc,
-  setDoc,
-} from "firebase/firestore";
-import { getDatabase, ref, onValue, remove } from "firebase/database";
-import { app, db_realtime } from "../firebase";
+import React, { useEffect, useState } from "react";
+import { ref, onValue } from "firebase/database";
+import { db_realtime } from "../firebase";
+import Bar from './Bar';
+
+import "../styles/App.css";
 
 function BinStatus({ binId, onRemoveBin }) {
   const [status, setStatus] = useState("Offline");
 
   useEffect(() => {
-    const database = getDatabase(app);
-    const binStatusRef = ref(database, `bins/${binId}/status`);
-    onValue(binStatusRef, (snapshot) => {
+    const getData = ref(db_realtime, `bins/${binId}/status`);
+    onValue(getData, (snapshot) => {
       const binStatus = snapshot.val();
       setStatus(binStatus || "Offline");
     });
   }, [binId]);
 
   const handleRemoveBin = () => {
-    const binRef = doc(db_realtime, "bins", binId);
-    deleteDoc(binRef)
-      .then(() => {
-        const database = getDatabase(app);
-        const binStatusRef = ref(database, `bins/${binId}`);
-        remove(binStatusRef);
-        onRemoveBin(binId);
-      })
-      .catch((error) => {
-        console.error("Error removing bin:", error);
-      });
+    onRemoveBin(binId);
   };
 
   return (
@@ -52,17 +36,17 @@ function AddBin({ onAddBin }) {
   const [secret, setSecret] = useState("");
 
   const handleAddBin = () => {
-    const db = getFirestore(app);
-    const binRef = doc(db, "bins", binId);
-    setDoc(binRef, { secret })
-      .then(() => {
+    const binRef = ref(db_realtime, `bins/${binId}/secret`);
+    onValue(binRef, (snapshot) => {
+      const correctSecret = snapshot.val();
+      if (correctSecret === secret) {
         onAddBin(binId);
         setBinId("");
         setSecret("");
-      })
-      .catch((error) => {
-        console.error("Error adding bin:", error);
-      });
+      } else {
+        alert("Invalid bin ID or secret");
+      }
+    });
   };
 
   return (
@@ -88,15 +72,15 @@ function UserView() {
   const [bins, setBins] = useState([]);
 
   useEffect(() => {
-    const db = getFirestore(app);
-    const binsCollection = collection(db, "bins");
-    const unsubscribe = onSnapshot(binsCollection, (snapshot) => {
-      const binIds = snapshot.docs.map((doc) => doc.id);
-      setBins(binIds);
-    });
-
-    return () => unsubscribe();
+    const storedBins = localStorage.getItem("bins");
+    if (storedBins) {
+      setBins(JSON.parse(storedBins));
+    }
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("bins", JSON.stringify(bins));
+  }, [bins]);
 
   const handleAddBin = (binId) => {
     if (bins.includes(binId)) {

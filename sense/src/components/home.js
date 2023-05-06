@@ -1,12 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Navbar from "./Navbar";
 import "../styles/Home.css";
 
 const Home = () => {
   return (
     <div>
-      <Navbar />
       <div className="homepage-container">
         <h1 className="homepage-title">BinSense</h1>
         <p className="homepage-description">

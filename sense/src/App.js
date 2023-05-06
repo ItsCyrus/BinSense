@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Switch, Route, useHistory } from "react-router-dom";
-import { onAuthStateChanged } from "firebase/auth";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useHistory,
+  Redirect,
+} from "react-router-dom";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 import { db, auth } from "./firebase";
 import Home from "./components/Home";
@@ -9,6 +15,7 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import UserView from "./components/UserView";
 import AdminView from "./components/AdminView";
+import Bar from "./components/Bar";
 import "./styles/App.css";
 
 function App() {
@@ -39,6 +46,7 @@ function App() {
           });
       } else {
         // User is logged out
+        signOut(auth);
         setIsAuthenticated(false);
         setIsAdmin(false);
 
@@ -50,28 +58,54 @@ function App() {
     return () => unsubscribe();
   }, [history]);
 
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        setIsAuthenticated(false);
+        setIsAdmin(false);
+      })
+      .catch((error) => {
+        console.error("Error signing out:", error);
+      });
+  };
+
   return (
     <Router>
+      <Bar handleLogout={handleLogout} />
+
       <Switch>
         <Route exact path="/">
           <Home />
         </Route>
+
         <Route path="/login">
-          <Login />
+          {isAuthenticated ? <Redirect to="/userview" /> : <Login />}
         </Route>
+
         <Route path="/signup">
-          <Signup />
+          {isAuthenticated ? <Redirect to="/userview" /> : <Signup />}
         </Route>
+
         <Route
           path="/userview"
-          component={UserView}
-          isAuthenticated={isAuthenticated}
+          render={() =>
+            isAuthenticated ? (
+              <UserView isAuthenticated={isAuthenticated} />
+            ) : (
+              <Redirect to="/login" />
+            )
+          }
         />
+
         <Route
           path="/adminview"
-          component={AdminView}
-          isAuthenticated={isAuthenticated}
-          isAdmin={isAdmin}
+          render={() =>
+            isAuthenticated && isAdmin ? (
+              <AdminView isAuthenticated={isAuthenticated} isAdmin={isAdmin} />
+            ) : (
+              <Redirect to="/login" />
+            )
+          }
         />
       </Switch>
     </Router>

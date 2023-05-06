@@ -2,7 +2,7 @@ import { useState } from "react";
 import { db, auth } from "../firebase";
 import { collection, doc, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import Navbar from "./Navbar";
+import Bar from "./Bar";
 
 function Signup() {
   const [email, setEmail] = useState("");
@@ -38,8 +38,6 @@ function Signup() {
 
   return (
     <div>
-      <Navbar />
-
       <div>
         <input
           type="email"

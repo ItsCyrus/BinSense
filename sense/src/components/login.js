@@ -8,7 +8,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { db, auth } from "../firebase";
-import Navbar from "./Navbar";
+import Bar from "./Bar";
 
 function Login() {
   const history = useHistory();
@@ -48,8 +48,6 @@ function Login() {
 
   return (
     <div>
-      <Navbar />
-
       <div className="container">
         <h2>Login</h2>
         <form onSubmit={handleLogin}>
