@@ -3,20 +3,31 @@ import { getDatabase, ref, onValue } from "firebase/database";
 import { app } from "./firebase";
 import "./styles/App.css";
 
-const db = getDatabase(app);
-
-function BinStatus({ binId }) {
+function BinStatus({ binId, onRemoveBin }) {
   const [status, setStatus] = useState("Offline");
 
   useEffect(() => {
-    const getData = ref(db, `/bins/${binId}/status`);
+    const database = getDatabase(app);
+    const getData = ref(database, `bins/${binId}/status`);
     onValue(getData, (snapshot) => {
       const binStatus = snapshot.val();
       setStatus(binStatus || "Offline");
     });
   }, [binId]);
 
-  return <td>{status}</td>;
+  const handleRemoveBin = () => {
+    onRemoveBin(binId);
+  };
+
+  return (
+    <tr>
+      <td>{binId}</td>
+      <td>{status}</td>
+      <td>
+        <button onClick={handleRemoveBin}>Remove</button>
+      </td>
+    </tr>
+  );
 }
 
 function AddBin({ onAddBin }) {
@@ -24,8 +35,8 @@ function AddBin({ onAddBin }) {
   const [secret, setSecret] = useState("");
 
   const handleAddBin = () => {
-    // Verify bin ID and secret
-    const binRef = ref(db, `/bins/${binId}/secret`);
+    const database = getDatabase(app);
+    const binRef = ref(database, `bins/${binId}/secret`);
     onValue(binRef, (snapshot) => {
       const correctSecret = snapshot.val();
       if (correctSecret === secret) {
@@ -60,8 +71,27 @@ function AddBin({ onAddBin }) {
 function App() {
   const [bins, setBins] = useState([]);
 
+  useEffect(() => {
+    const storedBins = localStorage.getItem("bins");
+    if (storedBins) {
+      setBins(JSON.parse(storedBins));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("bins", JSON.stringify(bins));
+  }, [bins]);
+
   const handleAddBin = (binId) => {
-    setBins([...bins, binId]);
+    if (bins.includes(binId)) {
+      alert("Bin already exists");
+    } else {
+      setBins([...bins, binId]);
+    }
+  };
+
+  const handleRemoveBin = (binId) => {
+    setBins(bins.filter((bin) => bin !== binId));
   };
 
   return (
@@ -72,14 +102,16 @@ function App() {
           <tr>
             <th>Bin ID</th>
             <th>Bin Status</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {bins.map((bin) => (
-            <tr key={bin}>
-              <td>{bin}</td>
-              <BinStatus binId={bin} />
-            </tr>
+            <BinStatus
+              key={bin}
+              binId={bin}
+              onRemoveBin={handleRemoveBin}
+            />
           ))}
         </tbody>
       </table>
