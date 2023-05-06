@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { app, auth } from "../firebase";
+import { db_realtime, auth } from "../firebase";
 import { getDatabase, ref, onValue } from 'firebase/database';
 
 function BinStatus({ binId, status }) {
@@ -29,7 +29,6 @@ function AdminView() {
   const database = getDatabase(app);
 
   useEffect(() => {
-    const database = getDatabase();
     const binsRef = ref(database, 'bins');
     onValue(binsRef, (snapshot) => {
       const binData = snapshot.val();

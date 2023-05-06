@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, firestore } from "../firebase";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+import { db, auth } from "../firebase";
 import Navbar from "./Navbar";
 
 function Login() {
@@ -16,8 +23,9 @@ function Login() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
 
-      const usersRef = firestore.collection("users");
-      const querySnapshot = await usersRef.where("id", "==", email).get();
+      const usersRef = collection(db, "users");
+      const q = query(usersRef, where("id", "==", email));
+      const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
         querySnapshot.forEach((doc) => {
