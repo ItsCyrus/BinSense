@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { app, auth } from "../firebase";
 import { collection, doc, setDoc } from "firebase/firestore";
-import { getDatabase } from 'firebase/database';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { getDatabase } from "firebase/database";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import Navbar from "./Navbar";
 
 function Signup() {
   const [email, setEmail] = useState("");
@@ -37,17 +38,21 @@ function Signup() {
 
   return (
     <div>
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button onClick={handleSignup}>Signup</button>
+      <Navbar />
+
+      <div>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button onClick={handleSignup}>Signup</button>
+      </div>
     </div>
   );
 }
