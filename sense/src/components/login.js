@@ -8,7 +8,6 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { db, auth } from "../firebase";
-import Bar from "./Bar";
 
 function Login() {
   const history = useHistory();
