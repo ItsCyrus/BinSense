@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { db_realtime, auth } from "../firebase";
+import { app, auth } from "../firebase";
 import { getDatabase, ref, onValue } from 'firebase/database';
 
 function BinStatus({ binId, status }) {
