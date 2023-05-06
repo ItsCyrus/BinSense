@@ -72,9 +72,9 @@ function App() {
   const [bins, setBins] = useState([]);
 
   useEffect(() => {
-    const storedBins = localStorage.getItem("bins");
+    const storedBins = JSON.parse(localStorage.getItem("bins"));
     if (storedBins) {
-      setBins(JSON.parse(storedBins));
+      setBins(storedBins);
     }
   }, []);
 
@@ -93,7 +93,6 @@ function App() {
   const handleRemoveBin = (binId) => {
     setBins(bins.filter((bin) => bin !== binId));
   };
-
   return (
     <div>
       <h1>BinSense</h1>
@@ -107,11 +106,7 @@ function App() {
         </thead>
         <tbody>
           {bins.map((bin) => (
-            <BinStatus
-              key={bin}
-              binId={bin}
-              onRemoveBin={handleRemoveBin}
-            />
+            <BinStatus key={bin} binId={bin} onRemoveBin={handleRemoveBin} />
           ))}
         </tbody>
       </table>
