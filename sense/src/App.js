@@ -16,6 +16,7 @@ import Signup from "./components/Signup";
 import UserView from "./components/UserView";
 import AdminView from "./components/AdminView";
 import Bar from "./components/Bar";
+import { AuthProvider } from "./AuthContext";
 import "./styles/App.css";
 
 function App() {
@@ -70,45 +71,38 @@ function App() {
   };
 
   return (
-    <Router>
-      <Bar handleLogout={handleLogout} />
-
-      <Switch>
-        <Route exact path="/">
-          <Home />
-        </Route>
-
-        <Route path="/login">
-          {isAuthenticated ? <Redirect to="/userview" /> : <Login />}
-        </Route>
-
-        <Route path="/signup">
-          {isAuthenticated ? <Redirect to="/userview" /> : <Signup />}
-        </Route>
-
-        <Route
-          path="/userview"
-          render={() =>
-            isAuthenticated ? (
-              <UserView isAuthenticated={isAuthenticated} />
-            ) : (
-              <Redirect to="/login" />
-            )
-          }
-        />
-
-        <Route
-          path="/adminview"
-          render={() =>
-            isAuthenticated && isAdmin ? (
-              <AdminView isAuthenticated={isAuthenticated} isAdmin={isAdmin} />
-            ) : (
-              <Redirect to="/login" />
-            )
-          }
-        />
-      </Switch>
-    </Router>
+    <AuthProvider isAuthenticated={isAuthenticated} isAdmin={isAdmin}>
+      <Router>
+        <Bar />
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route path="/login">
+            {isAuthenticated ? <Redirect to="/userview" /> : <Login />}
+          </Route>
+          <Route path="/signup">
+            {isAuthenticated ? <Redirect to="/userview" /> : <Signup />}
+          </Route>
+          <Route
+            path="/userview"
+            render={() =>
+              isAuthenticated ? <UserView /> : <Redirect to="/login" />
+            }
+          />
+          <Route
+            path="/adminview"
+            render={() =>
+              isAuthenticated && isAdmin ? (
+                <AdminView />
+              ) : (
+                <Redirect to="/login" />
+              )
+            }
+          />
+        </Switch>
+      </Router>
+    </AuthProvider>
   );
 }
 

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { ref, onValue } from "firebase/database";
 import { db_realtime } from "../firebase";
-import Bar from './Bar';
+import { AuthContext } from "../AuthContext";
+import { Redirect } from "react-router-dom";
 
 import "../styles/App.css";
 
@@ -69,6 +70,7 @@ function AddBin({ onAddBin }) {
 }
 
 function UserView() {
+  const { isAuthenticated } = useContext(AuthContext);
   const [bins, setBins] = useState([]);
 
   useEffect(() => {
@@ -93,6 +95,11 @@ function UserView() {
   const handleRemoveBin = (binId) => {
     setBins(bins.filter((bin) => bin !== binId));
   };
+
+  if (!isAuthenticated) {
+    // Redirect to login if not authenticated
+    return <Redirect to="/login" />;
+  }
 
   return (
     <div>

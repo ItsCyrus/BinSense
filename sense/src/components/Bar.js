@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { signOut } from "firebase/auth";
+import { AuthContext } from "../AuthContext";
 import { auth } from "../firebase";
 
-function Bar({ handleLogout }) {
+function Bar() {
+  const { isAuthenticated } = useContext(AuthContext);
   const location = useLocation();
   const isHomePage = location.pathname === "/";
   const isLoginOrSignupPage =
@@ -12,7 +14,7 @@ function Bar({ handleLogout }) {
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
-        handleLogout();
+        // Logout successful
       })
       .catch((error) => {
         console.log("Couldn't Sign-out");
