@@ -8,11 +8,13 @@ const Home = () => {
       <div className="homepage-container">
         <div className="homepage-section">
           <div className="homepage-section-content">
-            <img
-              className="homepage-section-image"
-              src="image1.jpg"
-              alt="Section 1"
-            />
+          <div className="circled-image-container">
+              <img
+                className="circled-image"
+                src="./images/img1.png"
+                alt="Section 1"
+              />
+            </div>
             <h2 className="homepage-section-title">Efficient Dustbin Management</h2>
             <p className="homepage-section-description">
               Welcome to BinSense, the smart dustbin management system. With
@@ -29,11 +31,13 @@ const Home = () => {
 
         <div className="homepage-section homepage-section-reversed">
           <div className="homepage-section-content">
-            <img
-              className="homepage-section-image"
-              src="image2.jpg"
-              alt="Section 2"
-            />
+          <div className="circled-image-container">
+              <img
+                className="circled-image"
+                src="./images/img2.png"
+                alt="Section 2"
+              />
+            </div>
             <h2 className="homepage-section-title">User-Friendly Interface</h2>
             <p className="homepage-section-description">
               Users can easily check if a dustbin is empty or full, helping them
@@ -49,11 +53,13 @@ const Home = () => {
 
         <div className="homepage-section">
           <div className="homepage-section-content">
-            <img
-              className="homepage-section-image"
-              src="image3.jpg"
-              alt="Section 3"
-            />
+          <div className="circled-image-container">
+              <img
+                className="circled-image"
+                src="./images/img3.png"
+                alt="Section 3"
+              />
+            </div>
             <h2 className="homepage-section-title">Advanced Admin Features</h2>
             <p className="homepage-section-description">
               BinSense also offers advanced features for administrators. Admins have
