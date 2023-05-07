@@ -4,6 +4,7 @@ import {
   Switch,
   Route,
   Redirect,
+  useHistory,
 } from "react-router-dom";
 
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -20,6 +21,7 @@ import "./styles/App.css";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -31,12 +33,13 @@ function App() {
         // User is logged out
         signOut(auth);
         setIsAuthenticated(false);
+        history.push("/login");
         console.log("User signed out", user);
       }
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [history]);
 
   return (
     <Router>
